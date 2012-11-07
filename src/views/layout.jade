@@ -1,0 +1,23 @@
+doctype 5
+html
+	head
+		title Porn Empire
+		link(rel="stylesheet", href="/css/bootstrap.min.css")
+		link(rel="stylesheet", href="/css/bootstrap-responsive.min.css")
+		link(rel='stylesheet', href="/css/style.css")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+	body
+		div(class="navbar navbar-fixed-top")
+			div(class="navbar-inner")
+				div(class="container")
+					a(class="brand", href="/") Porn Empire
+					button(id="upload", class="btn pull-right") Upload
+		div(id="upload-form", class="modal hide fade")
+			form(action="/", method="post", enctype="multipart/form-data")
+				input(type="file", name="file")
+				input(type="submit", value="upload", class="btn btn-submit")
+		block content
+		script(type="text/javascript", src="/js/jquery.min.js")
+		script(type="text/javascript", src="/js/bootstrap.min.js")
+		script(type="text/javascript", src="/js/bootbox.min.js")
+		script(type="text/javascript", src="/js/pornempire.js")

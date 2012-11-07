@@ -1,0 +1,10 @@
+
+.DS_Store
+
+src/node_modules
+
+src/public/images
+
+src/public/thumbs
+
+src/public/css/style.css

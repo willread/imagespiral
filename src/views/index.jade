@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	div(class="container")
+		div(id="images", class="box")
+			div(class="box-inner")
+				- each file in files
+					a(href="/" + file.replace(".jpg", ""))
+						img(src="/thumbs/" + file, width="140", height="140")

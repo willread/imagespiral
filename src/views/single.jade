@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	div(class="container")
+		div(class="row")
+			div(class="span8 box image")
+				div(class="box-inner")
+					img(class="full", src="/images/" + token + ".jpg")
+			div(class="span4 box")
+				div(class="box-inner")
+					div(class="toolbar")
+						a(href=previous) &lt;&lt;
+						a(href=next) &gt;&gt;
+					div
+						| This is where sharing stuff is, etc..
+			div(class="span4 box")
+				div(class="box-inner")
+					| Here's some other stuff, probably ads.
