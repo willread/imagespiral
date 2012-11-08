@@ -24,17 +24,6 @@ app.configure(function(){
 	app.use(express.cookieParser("I aM A ReaLLy DiffiCulT TO GueSS SecReT"));
 	app.use(express.session());
 	app.use(express.static(path.join(__dirname, 'public')));
-	
-	app.use(function(req, res, next){
-		
-		console.log("i got called!");
-
-		
-		res.locals.ad = "There is no ad";
-		next();
-
-	});
-	
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
@@ -45,6 +34,23 @@ app.configure(function(){
 
 app.configure('development', function(){
 	app.use(express.errorHandler());
+});
+
+/*
+ *
+ * Ad rotation helper
+ * Use in template
+ *
+ */
+
+app.configure(function(){
+	app.use(function(req, res, next){
+		
+		var num = Math.floor(Math.random() * ads.length);
+		res.locals.ad = ads[num].markup;
+		next();
+
+	});
 });
 
 /*
@@ -95,7 +101,7 @@ app.post("/", function(req, res){
 		
 		im.identify(temp, function(err, features){
 			
-			if(features.format == "JPEG"){
+			if(features && features.format == "JPEG"){
 			
 				im.crop({
 					srcPath: temp,

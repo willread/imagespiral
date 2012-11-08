@@ -3,16 +3,26 @@ extends layout
 block content
 	div(class="container")
 		div(class="row")
-			div(class="span8 box image")
+			div(class="span8 image box")
 				div(class="box-inner")
 					img(class="full", src="/images/" + token + ".jpg")
-			div(class="span4 box")
-				div(class="box-inner")
-					div(class="toolbar")
-						a(href=previous) &lt;&lt;
-						a(href=next) &gt;&gt;
-					div
-						| This is where sharing stuff is, etc..
-			div(class="span4 box")
-				div(class="box-inner")
-					=locals.ad
+			div(class="span4")
+				div(class="box")
+					div(class="box-inner")
+						button(id="upload", class="btn btn-block") Upload
+						div(id="upload-form", class="modal hide fade")
+							form(action="/", method="post", enctype="multipart/form-data")
+								input(type="file", name="file")
+								input(type="submit", value="upload", class="btn btn-submit")
+				div(class="box")
+					div(class="box-inner")
+						div
+							h4 Direct URL
+							input(id="share-url", value="http://imagespiral.com/" + token, spellcheck="false")
+							h4 Forum Embed
+							input(id="share-forum", value="[URL=http://imagespiral.com/" + token + "][IMG]http://imagespiral.com/thumbs/" + token + ".jpg[/IMG][/URL]", spellcheck="false")
+							h4 HTML Embed
+							input(id="share-html", value="<a href='http://imagespiral.com/" + token + "'><img src='http://imagespiral.com/thumbs/" + token + ".jpg'></a>", spellcheck="false")
+				div(class="box")
+					div(class="box-inner")
+						div(style="width: 300px; height: 250px; margin: 0px auto; background: #444; line-height: 250px; text-align: center; color: #333; font-size: 48px;") Ad

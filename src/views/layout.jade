@@ -10,15 +10,8 @@ html
 		div(class="navbar navbar-fixed-top")
 			div(class="navbar-inner")
 				div(class="container")
-					a(class="brand", href="/") P*** Empire
-					button(id="upload", class="btn pull-right") Upload
-		div(id="upload-form", class="modal hide fade")
-			form(action="/", method="post", enctype="multipart/form-data")
-				input(type="file", name="file")
-				input(type="submit", value="upload", class="btn btn-submit")
+					a(class="brand", href="/") ImageSpiral
 		block content
-		div(class="container")
-			=locals["omfg"]
 		script(type="text/javascript", src="/js/jquery.min.js")
 		script(type="text/javascript", src="/js/bootstrap.min.js")
 		script(type="text/javascript", src="/js/bootbox.min.js")

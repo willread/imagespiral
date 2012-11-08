@@ -1,14 +1,10 @@
-{
-	"ads": [
-		{
-			"id": "ad1",
-			"num": 1,
-			"period": 86400,
-			"markup": "<div>I am an ad</div>"
-		},
-		{
-			"id": "ad2",
-			"markup": "<div>I am another ad</div>"
-		}
-	]
-}
+[
+	{
+		"id": "ad1",
+		"markup": "<div>I am an ad</div>"
+	},
+	{
+		"id": "ad2",
+		"markup": "<div>I am another ad</div>"
+	}
+]
