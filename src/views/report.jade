@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	div(class="container")
+		div(class="box content")
+			div(class="form")
+				form(action="/report", method="POST")
+					p You may report an inappropriate image or request the deletion of an image by filling out the form below.
+					h2 Full link to image, ie: http://#{locals.config.domain}/123456
+					input(type="text", name="url")
+					h2 Reason for removal?
+					textarea(name="reason")
+					p
+						input(type="submit", class="btn btn-custom")

@@ -1,0 +1,11 @@
+{
+	"name": "ImageSpiral",
+	"domain": "imagespiral.com",
+	"smtp": {
+		"host": "smtp.somewhere.com",
+		"user": "user@somewhere.com",
+		"password": "password",
+		"ssl": "false"
+	},
+	"reportEmail": "reports@imagespiral.com"
+}

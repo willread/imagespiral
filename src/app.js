@@ -1,4 +1,4 @@
-var ads = require("./config/ads");
+var config = require("./config/config");
 
 var express = require("express");
 var routes = require("./routes");
@@ -7,8 +7,20 @@ var http = require("http");
 var path = require("path");
 var fs = require("fs");
 var im = require("imagemagick");
+var email = require("emailjs/email");
+	
+// Initialize app
 	
 var app = express();
+
+// Connect to email server
+
+var emailServer = email.server.connect({
+	host: config.smtp.host,
+	user: config.smtp.user,
+	password: config.smtp.password,
+	ssl: config.smtp.ssl == "true" ? true : false
+});
 
 /*
  *
@@ -21,15 +33,23 @@ app.configure(function(){
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
 	
+	// Misc helpers
+	
+	app.use(function(req, res, next){
+		res.locals.config = config;
+		res.locals.date = new Date();
+		next();
+	});
+	
 	app.use(express.cookieParser("I aM A ReaLLy DiffiCulT TO GueSS SecReT"));
 	app.use(express.session());
+	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
-	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 });
 
 app.configure('development', function(){
@@ -38,29 +58,42 @@ app.configure('development', function(){
 
 /*
  *
- * Ad rotation helper
- * Use in template
- *
- */
-
-app.configure(function(){
-	app.use(function(req, res, next){
-		
-		var num = Math.floor(Math.random() * ads.length);
-		res.locals.ad = ads[num].markup;
-		next();
-
-	});
-});
-
-/*
- *
- * Routes
+ * Misc Routes
  *
  */
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+
+app.get('/tos', function(req, res){
+	res.render("tos");
+});
+
+app.get("/reported", function(req, res){
+	res.render("reported");
+});
+
+/*
+ *
+ * Report images
+ *
+ */
+
+app.get('/report', function(req, res){
+	res.render("report");
+});
+
+app.post("/report", function(req, res){
+	emailServer.send({
+		// TODO: Cleanse inputs
+		text: req.body.url + "\n\n" + req.body.reason,
+		from: config.name + " Reports <" + config.reportEmail + ">",
+		to: config.reportEmail,
+		subject: "Reported Image"
+	}, function(err, message){
+	})
+	res.redirect("/reported");
+});
 
 /*
  *
@@ -140,6 +173,6 @@ app.post("/", function(req, res){
  */
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+	console.log("Express server listening on port " + app.get('port'));
 });
 

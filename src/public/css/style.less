@@ -1,29 +1,36 @@
-@import url(http://fonts.googleapis.com/css?family=Passion+One);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+@barColor: #232a2d;
+@color: #fff;
+@contrastColor: #ddd;
 
 body {
-	background: #121212;
-	padding-top: 70px;
+	background: @contrastColor;
+	padding-top: 50px;
+	font-family: "Open Sans", sans-serif;
 }
 
 .navbar-inner {
-	background: #2b2b2b;
-	border-bottom: 1px solid #444;
+	background: @barColor;
+	border-bottom: none;
 }
 
 .navbar .brand {
-	color: #fff;
-	font-family: "Passion One", sans-serif;
-	font-size: 30px;
+	color: #eee;
+	font-family: "Open Sans", sans-serif;
+	font-size: 20px;
 	text-shadow: none;
-	letter-spacing: 1px;
-	font-weight: normal;
+	font-weight: bold;
 }
 
 .box {
 	-webkit-border-radius: 10px;
 	color: #fff;
-	background: #2b2b2b;
-	margin-bottom: 30px;
+	background: @color;
+	margin-bottom: 10px;
+	position: relative;
+	padding: 0px;
+	color: #333;
 }
 
 .box-inner {
@@ -39,7 +46,7 @@ body {
 }
 
 #images img {
-	border: 1px solid #444;
+	border: 1px solid @contrastColor;
 	margin: 5px;
 }
 
@@ -63,21 +70,142 @@ input {
 	border: none;
 }
 
-/* Large desktop */
-@media (min-width: 1200px) { 
+.btn-custom {
+  background-color: hsl(196, 6%, 30%) !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#778387", endColorstr="#474e51");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#778387), to(#474e51));
+  background-image: -moz-linear-gradient(top, #778387, #474e51);
+  background-image: -ms-linear-gradient(top, #778387, #474e51);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #778387), color-stop(100%, #474e51));
+  background-image: -webkit-linear-gradient(top, #778387, #474e51);
+  background-image: -o-linear-gradient(top, #778387, #474e51);
+  background-image: linear-gradient(#778387, #474e51);
+  border-color: #474e51 #474e51 hsl(196, 6%, 25%);
+  color: #fff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
+  -webkit-font-smoothing: antialiased;
+}
 
+.upload button.btn.btn-custom,
+.upload div.drop {
+	width: 300px;
+	height: 50px;
+	margin: 0px auto;
+	line-height: 50px;
+	font-size: 18px;
+	font-family: "Open Sans", sans-serif;
+	font-weight: 600;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-o-border-radius: 10px;
+	border-radius: 10px;
+	padding: 0px;
 }
- 
-/* Portrait tablet to landscape and desktop */
-@media (min-width: 768px) and (max-width: 979px) { }
- 
-/* Landscape phone to portrait tablet */
-@media (max-width: 767px) {  }
- 
-/* Landscape phones and down */
-@media (max-width: 979px) { 
-body {
-	padding-top: 0px;
+
+.upload div.drop {
+	border: 1px dashed #ddd;
+	color: #ddd;
+	-webkit-transition-duration: 200ms;
+	-moz-transition-duration: 200ms;
+	-ms-transition-duration: 200ms;
+	-o-transition-duration: 200ms;
+	transition-duration: 200ms;
 }
- }
- 
+
+.upload div.drop:hover {
+	border-color: #aaa;
+	color: #aaa;
+	-webkit-transition-duration: 200ms;
+}
+
+.upload h1 {
+	color: #666;
+	font-size: 20px;
+	font-weight: bold;
+	margin: 5px;
+}
+
+.upload h3 {
+	font-size: 18px;
+	color: #aaa;
+	font-weight: 400;
+	margin: 0px;
+}
+
+#file-button {
+	position: relative;
+}
+
+#file {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 0;
+	padding: 0;
+	opacity: 0;
+	font-size: 24px;
+	cursor: pointer;
+}
+
+#upload-cover {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: #fff;
+	opacity: 0.8;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+}
+
+.footer {
+	padding: 0px;
+	font-size: 12px;
+	font-weight: normal;
+	margin-bottom: 10px;
+}
+
+.footer a {
+	color: #999;
+	padding-right: 20px;
+}
+
+.footer .copyright {
+	color: #bbb;
+}
+
+.hidden {
+	display: none;
+}
+
+.content{
+	padding: 20px;
+}
+
+.content h1 {
+	font-size: 22px;
+	margin: 10px 0;
+}
+
+.content h2 {
+	font-size: 16px;
+	margin: 0;
+}
+
+.content .form {
+	width: 400px;
+	margin: 0px auto;
+}
+
+.content input,
+.content textarea {
+	width: 400px;
+}
+
+.content input.btn {
+	width: 150px;
+	height: auto;
+	margin-top: 10px;
+}

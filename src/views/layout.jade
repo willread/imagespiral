@@ -1,18 +1,23 @@
 doctype 5
 html
 	head
-		title P*** Empire
+		title=locals.config.name
 		link(rel="stylesheet", href="/css/bootstrap.min.css")
-		link(rel="stylesheet", href="/css/bootstrap-responsive.min.css")
 		link(rel='stylesheet', href="/css/style.css")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 	body
 		div(class="navbar navbar-fixed-top")
 			div(class="navbar-inner")
 				div(class="container")
-					a(class="brand", href="/") ImageSpiral
+					a(class="brand", href="/") #{locals.config.name}
 		block content
+		div(class="footer container")
+			a(href="/report") Report an Image
+			a(href="/tos") Terms of Service
+			span(class="copyright pull-right") &copy; #{locals.date.getFullYear()} #{locals.config.name}
 		script(type="text/javascript", src="/js/jquery.min.js")
+		script(type="text/javascript", src="/js/jquery-ui-1.9.1.min.js")
+		script(type="text/javascript", src="/js/jquery.fileupload.js")
+		script(type="text/javascript", src="/js/jquery.fileupload-ui.js")
+		script(type="text/javascript", src="/js/jquery.iframe-transport.js")
 		script(type="text/javascript", src="/js/bootstrap.min.js")
-		script(type="text/javascript", src="/js/bootbox.min.js")
 		script(type="text/javascript", src="/js/pornempire.js")
