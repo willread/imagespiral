@@ -1,30 +1,16 @@
 $(function () {
-	$(".drop").droppable({
-		hoverClass: "hover"
-	});
-    $('#file').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
-        },
-        dropZone: $(".drop"),
-        autoUpload: true
-    });
-    $('#file').bind('fileuploadadd', function(e, data) {
-    	console.log(data);
+	$("#file").change(function(e){
 		$("#upload-cover").removeClass("hidden");
-    	var form = document.createElement("form");
-    	form.method = "POST";
-    	form.enctype = "multipart/form-data";
-    	form.action = "/";
-    	data.fileInput[0].name = "file";
-    	form.appendChild(data.fileInput[0]);
-    	
-    	form.submit();
-    })
-    $(document).bind('drop dragover', function (e) {
-    	e.preventDefault();
+    	document.getElementById("upload-form").submit();
 	});
+	
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-36408715-1']);
+	_gaq.push(['_trackPageview']);
+	
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
 });

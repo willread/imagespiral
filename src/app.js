@@ -125,45 +125,69 @@ app.post("/", function(req, res){
 
 	var temp = req.files.file.path;
 	var path = "./public/images/" + token;
-
-	// TODO: Convert all to JPEGs
-	// TODO: Strip metadata
-	// TODO: Validate
 	
-	try {
+	if(!temp){
+		res.send("error");
+	}else{
+	
+		// TODO: Convert all to JPEGs
+		// TODO: Strip metadata
+		// TODO: Validate
 		
-		im.identify(temp, function(err, features){
+		try {
 			
-			if(features && features.format == "JPEG"){
-			
-				im.crop({
-					srcPath: temp,
-					dstPath: "./public/thumbs/" + token + ".jpg",
-					width: 150,
-					height: 150,
-					quality: 1,
-					gravity: "Center"
-				}, function(err, stdout, stderr){
-					if(err) throw err;
-					console.log(arguments);
-					fs.rename(temp, path + ".jpg", function(err){
+			im.identify(temp, function(err, features){
+				
+				if(features && features.format == "JPEG"){
+					
+					/*
+					im.crop({
+						srcPath: temp,
+						dstPath: "./public/thumbs/" + token + ".jpg",
+						width: 150,
+						height: 150,
+						quality: 1,
+						gravity: "Center"
+					}, function(err, stdout, stderr){
 						if(err) throw err;
-						
-						res.redirect("/" + token);
-					})	
-				});
-			
-			}else{
-			
-				res.send("error"); // FIXME
-			
-			}
-			
-		});
+						console.log(arguments);
+						fs.rename(temp, path + ".jpg", function(err){
+							if(err) throw err;
+							
+							res.redirect("/" + token);
+						})	
+					});
+					*/
+					im.resize({
+						srcPath: temp,
+						dstPath: "./public/thumbs/" + token + ".jpg",
+						width: 600,
+						quality: 1,
+						gravity: "Center"
+					}, function(err, stdout, stderr){
+						if(err) throw err;
+						console.log(arguments);
+						fs.rename(temp, path + ".jpg", function(err){
+							if(err) throw err;
+							
+							res.redirect("/" + token);
+						})	
+					});
+				
+				}else{
+				
+					res.send("error"); // FIXME
+				
+				}
+				
+			});
+		
+		}catch(err){
+			console.log("err: " + err);
+		}
 	
-	}catch(err){
-		console.log("err: " + err);
 	}
+
 });
 
 /*

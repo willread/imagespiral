@@ -6,8 +6,14 @@ block content
 			div(class="box-inner upload content")
 				div(id="upload-cover", class="hidden")
 				h1 Upload An Image:
+				p(style="color: #ddd") JPEG images only, to a maximum of 5MB
 				button(id="file-button", class="btn btn-custom") Select A File
-					input(id="file", type="file", name="file", data-url="/")
-				h3 - or -
-				div(class="drop") Drag & Drop
+					form(id="upload-form", action="/", method="POST", enctype="multipart/form-data")
+						input(id="file", type="file", name="file", data-url="/")
+				//h3 - or -
+				//div(class="input-append")
+				//	input(type="text", id="url", placeholder="Upload From a URL", name="url")
+				//	button(id="url-button", class="add-on btn-custom") Go
+				//h3 - or -
+				//div(class="drop") Drag & Drop
 				

@@ -5,18 +5,16 @@ block content
 		div(class="row")
 			div(class="span8 image box")
 				div(class="box-inner")
-					img(class="full", src="/images/" + token + ".jpg")
+					a(href="/images/" + token + ".jpg")
+						img(class="full", src="/thumbs/" + token + ".jpg")
 			div(class="span4")
 				div(class="box")
 					div(class="box-inner")
-						button(id="upload", class="btn btn-block") Upload
-						div(id="upload-form", class="modal hide fade")
-							form(action="/", method="post", enctype="multipart/form-data")
-								input(type="file", name="file")
-								input(type="submit", value="upload", class="btn btn-submit")
+						a(href="/")
+							button(id="upload", class="btn btn-block") Upload
 				div(class="box")
 					div(class="box-inner")
-						div
+						#meta
 							h4 Direct URL
 							input(id="share-url", value="http://imagespiral.com/" + token, spellcheck="false")
 							h4 Forum Embed
@@ -25,4 +23,6 @@ block content
 							input(id="share-html", value="<a href='http://imagespiral.com/" + token + "'><img src='http://imagespiral.com/thumbs/" + token + ".jpg'></a>", spellcheck="false")
 				div(class="box")
 					div(class="box-inner")
-						div(style="width: 300px; height: 250px; margin: 0px auto; background: #444; line-height: 250px; text-align: center; color: #333; font-size: 48px;") Ad
+						// div(style="width: 280px; height: 250px; margin: 0px auto; background: #444; line-height: 250px; text-align: center; color: #333; font-size: 48px;") Ad
+						div(id="sidebar-ad")
+							| <iframe border=0 frameborder=0 marginheight=0 marginwidth=0 width=258 height=258 scrolling=no allowtransparency=true src=http://adserver.juicyads.com/adshow.php?adzone=171384></iframe>
