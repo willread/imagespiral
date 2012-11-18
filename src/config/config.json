@@ -2,10 +2,10 @@
 	"name": "ImageSpiral",
 	"domain": "imagespiral.com",
 	"smtp": {
-		"host": "smtp.somewhere.com",
-		"user": "user@somewhere.com",
-		"password": "password",
+		"host": "smtp.gmail.com",
+		"user": "reports@imagespiral.com",
+		"password": "cx5accjg",
 		"ssl": "false"
 	},
-	"reportEmail": "reports@imagespiral.com"
+	"reportEmail": "drastik@drastik.net"
 }

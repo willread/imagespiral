@@ -8,6 +8,7 @@ var path = require("path");
 var fs = require("fs");
 var im = require("imagemagick");
 var email = require("emailjs/email");
+var fsextra = require("fs.extra");
 	
 // Initialize app
 	
@@ -167,7 +168,7 @@ app.post("/", function(req, res){
 					}, function(err, stdout, stderr){
 						if(err) throw err;
 						console.log(arguments);
-						fs.rename(temp, path + ".jpg", function(err){
+						fsextra.copy(temp, path + ".jpg", function(err){
 							if(err) throw err;
 							
 							res.redirect("/" + token);

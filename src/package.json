@@ -10,6 +10,7 @@
     "jade": "*",
     "less-middleware": "*",
     "imagemagick": "*",
-    "emailjs": "*"
+    "emailjs": "*",
+    "fs.extra": "*"
   }
 }

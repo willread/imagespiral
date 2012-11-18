@@ -66,6 +66,7 @@ body {
 	margin: 10px;
 }
 
+/*
 input {
 	width: 100%;
 	padding: 0px;
@@ -75,6 +76,7 @@ input {
 	background-color: rgba(255, 255, 255, 0.6);
 	border: none;
 }
+*/
 
 .btn-custom {
   background-color: hsl(196, 6%, 30%) !important;
@@ -189,8 +191,11 @@ input {
 	margin: 0px;
 }
 
+/*
+
 #file-button {
 	position: relative;
+	z-index: 1;
 }
 
 #file {
@@ -204,7 +209,10 @@ input {
 	cursor: pointer;
 	width: 500px;
 	height: 50px;
+	z-index: 2;
 }
+
+*/
 
 #upload-cover {
 	position: absolute;
@@ -256,10 +264,12 @@ input {
 	margin: 0px auto;
 }
 
+/*
 .content input,
 .content textarea {
 	width: 400px;
 }
+*/
 
 .content input.btn {
 	width: 150px;
@@ -279,4 +289,11 @@ input {
 #sidebar-ad {
 	padding: 10px 10px 0px 10px;
 	background: #EEE;
+}
+
+/* FIXME */
+
+input[type="file"] {
+	height: auto;
+	line-height: 0px;
 }
