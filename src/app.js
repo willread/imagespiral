@@ -23,6 +23,10 @@ var emailServer = email.server.connect({
 	ssl: config.smtp.ssl == "true" ? true : false
 });
 
+// Open log file stream
+
+var log = fs.createWriteStream("./log", {flags: "a"});
+
 /*
  *
  * App configurations
@@ -47,7 +51,9 @@ app.configure(function(){
 	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
-	app.use(express.logger('dev'));
+	app.use(express.logger({
+		stream: log
+	}));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
@@ -128,7 +134,7 @@ app.post("/", function(req, res){
 	var path = "./public/images/" + token;
 	
 	if(!temp){
-		res.send("error");
+		res.send("error: file failed to upload");
 	}else{
 		
 		fs.stat(temp, function(err, stats){
