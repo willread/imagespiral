@@ -130,23 +130,29 @@ app.post("/", function(req, res){
 	if(!temp){
 		res.send("error");
 	}else{
-
-		var child = exec("convert " + temp + " -strip -thumbnail 250x250 " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
-			// console.log(error);
-			// console.log(stdout);
-			// console.log(stderr);
-			fs.exists("./public/small/" + token + ".jpg", function(exists){
-				if(exists){
-					exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
-						exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
-							res.redirect("/" + token);
-						});
+		
+		fs.stat(temp, function(err, stats){
+			if(stats.size > config.maxFileSize * 1024 * 1024){
+				res.send("error: file is too large");
+			}else{
+				exec("convert " + temp + " -strip -thumbnail 250x250 " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
+					// console.log(error);
+					// console.log(stdout);
+					// console.log(stderr);
+					fs.exists("./public/small/" + token + ".jpg", function(exists){
+						if(exists){
+							exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
+								exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
+									res.redirect("/" + token);
+								});
+							});
+						}else{
+							res.send("error");
+						}
 					});
-				}else{
-					res.send("error");
-				}
-			});
-		});
+				});
+			}
+		})
 	
 	}
 

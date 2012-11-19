@@ -7,5 +7,6 @@
 		"password": "cx5accjg",
 		"ssl": "false"
 	},
-	"reportEmail": "drastik@drastik.net"
+	"reportEmail": "reports@imagespiral.com",
+	"maxFileSize": "2"
 }

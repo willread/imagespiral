@@ -6,7 +6,7 @@ block content
 			div(class="box-inner upload content")
 				div(id="upload-cover", class="hidden")
 				h1 Upload An Image:
-				p(style="color: #ddd") JPEG images only, to a maximum of 5MB
+				p(style="color: #ddd") JPEG, GIF and PNG images only, #{locals.config.maxFileSize}MB max
 				// button(id="file-button", class="btn btn-custom") Select A File
 				form(id="upload-form", action="/", method="POST", enctype="multipart/form-data")
 					input(id="file", type="file", name="file", data-url="/")
