@@ -6,9 +6,9 @@ var user = require("./routes/user");
 var http = require("http");
 var path = require("path");
 var fs = require("fs");
-var im = require("imagemagick");
 var email = require("emailjs/email");
-var fsextra = require("fs.extra");
+var sys = require('sys')
+var exec = require('child_process').exec;
 	
 // Initialize app
 	
@@ -159,7 +159,7 @@ app.post("/", function(req, res){
 						})	
 					});
 					*/
-					im.resize({
+					/*im.resize({
 						srcPath: temp,
 						dstPath: "./public/thumbs/" + token + ".jpg",
 						width: 600,
@@ -173,8 +173,18 @@ app.post("/", function(req, res){
 							
 							res.redirect("/" + token);
 						})	
+					});*/
+					// convert wallpaper019-1920x1200.jpg -strip -thumbnail 250x250 thumb.jpg
+					var child = exec("convert " + temp + " -strip -thumbnail 250x260 " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
+						// console.log(error);
+						// console.log(stdout);
+						// console.log(stderr);
+						exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
+							exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
+								res.redirect("/" + token);
+							});
+						});
 					});
-				
 				}else{
 				
 					res.send("error"); // FIXME
