@@ -8,5 +8,5 @@
 		"ssl": "false"
 	},
 	"reportEmail": "reports@imagespiral.com",
-	"maxFileSize": "2"
+	"maxFileSize": "3"
 }
