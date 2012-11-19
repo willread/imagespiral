@@ -9,6 +9,7 @@ var fs = require("fs");
 var email = require("emailjs/email");
 var sys = require('sys')
 var exec = require('child_process').exec;
+var logger = require("express-logger");
 	
 // Initialize app
 	
@@ -22,10 +23,6 @@ var emailServer = email.server.connect({
 	password: config.smtp.password,
 	ssl: config.smtp.ssl == "true" ? true : false
 });
-
-// Open log file stream
-
-var log = fs.createWriteStream("./log", {flags: "a"});
 
 /*
  *
@@ -51,8 +48,8 @@ app.configure(function(){
 	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
-	app.use(express.logger({
-		stream: log
+	app.use(logger({
+		path: "request.log"
 	}));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());

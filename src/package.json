@@ -1,5 +1,5 @@
 {
-  "name": "porn-empire",
+  "name": "imagespiral",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -9,8 +9,7 @@
     "express": "3.0.1",
     "jade": "*",
     "less-middleware": "*",
-    "imagemagick": "*",
     "emailjs": "*",
-    "fs.extra": "*"
+	"express-logger": "*"
   }
 }
