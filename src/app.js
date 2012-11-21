@@ -73,6 +73,10 @@ app.get('/tos', function(req, res){
 	res.render("tos");
 });
 
+app.get('/test', function(req, res){
+	res.render("test");
+});
+
 app.get("/reported", function(req, res){
 	res.render("reported");
 });
