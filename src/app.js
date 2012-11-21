@@ -130,6 +130,14 @@ app.post("/", function(req, res){
 	var temp = req.files.file.path;
 	var path = "./public/images/" + token;
 	
+	var thumbnailSize;
+
+	for(var size in config.thumbnailSizes)
+		if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
+
+	console.log(req.body["thumbnail-size"]);
+	if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
+	
 	if(!temp){
 		res.send("error: file failed to upload");
 	}else{
@@ -138,10 +146,7 @@ app.post("/", function(req, res){
 			if(stats.size > config.maxFileSize * 1024 * 1024){
 				res.send("error: file is too large");
 			}else{
-				exec("convert " + temp + " -strip -thumbnail 250x250 " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
-					// console.log(error);
-					// console.log(stdout);
-					// console.log(stderr);
+				exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
 					fs.exists("./public/small/" + token + ".jpg", function(exists){
 						if(exists){
 							exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
@@ -150,7 +155,7 @@ app.post("/", function(req, res){
 								});
 							});
 						}else{
-							res.send("error");
+							res.send("error: invalid image");
 						}
 					});
 				});

@@ -1,6 +1,9 @@
 $(function () {
 	$("#file").change(function(e){
-		$("#upload-cover").removeClass("hidden");
-    	document.getElementById("upload-form").submit();
+	   	$("#upload-button").show();
 	});
+   	$("#upload-button").hide();
+   	$("#upload-button").click(function(){
+		$("#upload-cover").removeClass("hidden");
+   	});
 });

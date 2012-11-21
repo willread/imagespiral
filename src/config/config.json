@@ -8,5 +8,13 @@
 		"ssl": "false"
 	},
 	"reportEmail": "reports@imagespiral.com",
-	"maxFileSize": "3"
+	"maxFileSize": "3",
+	"thumbnailSizes": [
+		"100x100",
+		"150x150",
+		"200x200",
+		"250x250",
+		"300x300",
+		"350x350"
+	]
 }

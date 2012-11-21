@@ -8,8 +8,21 @@ block content
 				h1 Upload An Image:
 				p(style="color: #ddd") JPEG, GIF and PNG images only, #{locals.config.maxFileSize}MB max
 				// button(id="file-button", class="btn btn-custom") Select A File
-				form(id="upload-form", action="/", method="POST", enctype="multipart/form-data")
-					input(id="file", type="file", name="file", data-url="/")
+				div(id="upload-form")
+					form(id="upload-form", action="/", method="POST", enctype="multipart/form-data", class="form-horizontal")
+						div(class="control-group")
+							label(class="control-label", for="thumbnail-size") Thumbnail Size
+							div(class="controls")						
+								select(name="thumbnail-size")
+									each size in locals.config.thumbnailSizes
+										option(value=size) #{size}
+						div(class="control-group")
+							label(class="control-label", for="file") Choose A File
+							div(class="controls")
+								input(id="file", type="file", name="file", data-url="/")
+						div(class="control-group")
+							div(class="controls")
+								input(id="upload-button", type="submit", class="btn btn-custom", value="Upload")
 				//h3 - or -
 				//div(class="input-append")
 				//	input(type="text", id="url", placeholder="Upload From a URL", name="url")

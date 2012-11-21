@@ -96,7 +96,7 @@ input {
 }
 
 .content.upload {
-	padding-bottom: 30px;
+	padding-bottom: 20px;
 }
 
 .upload button.btn.btn-custom,
@@ -271,12 +271,6 @@ input {
 }
 */
 
-.content input.btn {
-	width: 150px;
-	height: auto;
-	margin-top: 10px;
-}
-
 #meta input {
 	border: 1px solid #ddd;
 	width: 100%;
@@ -288,13 +282,39 @@ input {
 }
 
 #sidebar-ad {
-	padding: 10px 10px 0px 10px;
-	background: #EEE;
+	/* padding: 10px 10px 0px 10px; 
+	background: #EEE;*/
 }
 
 /* FIXME */
 
-input[type="file"] {
-	height: auto;
-	line-height: 0px;
+.file-input-wrapper.btn {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.file-input-wrapper.btn,
+#upload-form input,
+#upload-form select {
+	width: 150px;
+}
+
+#upload-form {
+	width: 400px;
+	margin: 0px auto;
+	text-align: left;
+}
+
+#upload-form label {
+	color: #999;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+#upload-form .control-group {
+	margin-bottom: 10px;
+}
+
+.file-input-name {
+	display: none;
 }
