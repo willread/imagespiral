@@ -10,6 +10,7 @@ var email = require("emailjs/email");
 var sys = require('sys')
 var exec = require('child_process').exec;
 var logger = require("express-logger");
+var cluster = require("cluster");
 	
 // Initialize app
 	
@@ -175,8 +176,31 @@ app.post("/", function(req, res){
  * Start the server!
  *
  */
+ 
+var cpus = require("os").cpus().length;
 
-http.createServer(app).listen(app.get('port'), function(){
-	console.log("Express server listening on port " + app.get('port'));
-});
+if(cluster.isMaster){
+
+	// Fork
+	
+	for(var ii = 0; ii <cpus; ii++){
+		cluster.fork();
+	}
+	
+	cluster.on("exit", function(worker, code, signal){
+		console.log("worker " + worker.process.pid + " died");
+		cluster.fork(); // Restart
+	});
+	
+	cluster.on("online", function(worker){
+		console.log("worker " + worker.process.pid + " online");
+	});
+
+}else{
+
+	http.createServer(app).listen(app.get('port'), function(){
+		console.log("Express server listening on port " + app.get('port'));
+	});	
+
+}
 
