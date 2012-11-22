@@ -9,7 +9,6 @@ var fs = require("fs");
 var email = require("emailjs/email");
 var sys = require('sys')
 var exec = require('child_process').exec;
-var logger = require("express-logger");
 var cluster = require("cluster");
 	
 // Initialize app
@@ -49,9 +48,6 @@ app.configure(function(){
 	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
-	app.use(logger({
-		path: "request.log"
-	}));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
