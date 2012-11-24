@@ -12,6 +12,8 @@
     "emailjs": "*",
 	"express-logger": "*",
 	"redis": "*",
-	"skip32": "*"
+	"skip32": "*",
+	"connect-redis": "*",
+	"password-hash": "*"
   }
 }

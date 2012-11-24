@@ -11,13 +11,16 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 var cluster = require("cluster");
 var redis = require("redis");
+var RedisStore = require('connect-redis')(express);
 var skip32 = new require("skip32").Skip32;
 skip32 = new skip32([0x9b, 0x21, 0x96, 0xe, 0x1a, 0xcf, 0x24, 0x5f, 0x14, 0x93]);
+var passwordHash = require('password-hash');
 	
 // Initialize app
 	
 var app = express();
 
+// Setup authentication
 // Setup redis
 
 var redisClient = redis.createClient();
@@ -55,7 +58,11 @@ app.configure(function(){
 	});
 	
 	app.use(express.cookieParser("I aM A ReaLLy DiffiCulT TO GueSS SecReT"));
-	app.use(express.session());
+	app.use(express.session({
+		secret: "I aM A ReaLLy DiffiCulT TO GueSS SecReT",
+		store: new RedisStore,
+		cookie: { secure: false, maxAge: 86400000 }
+	}));
 	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
@@ -75,7 +82,6 @@ app.configure('development', function(){
  */
 
 app.get('/', routes.index);
-app.get('/users', user.list);
 
 app.get('/tos', function(req, res){
 	res.render("tos");
@@ -87,6 +93,75 @@ app.get('/test', function(req, res){
 
 app.get("/reported", function(req, res){
 	res.render("reported");
+});
+
+/*
+ *
+ * Handle session management
+ *
+ */
+ 
+app.get("/login", function(req, res){
+	res.render("login");
+});
+
+app.post("/login", function(req, res){
+	redisClient.hgetall("user:"+req.body.user, function(err, user){
+		if(!user){
+			// FIXME: No such user
+			res.redirect("/login");
+		}else{
+			if(!passwordHash.verify(req.body.password, user.password)){
+				// FIXME: Invalid password
+				res.redirect("/login");
+			}else{
+				// FIXME: Go to user homepage
+				res.redirect("/tos");			
+			}
+		}
+	});
+});
+
+app.get("/register", function(req, res){
+	res.render("register");
+});
+
+app.post("/register", function(req, res){
+	redisClient.hgetall("user:"+req.body.user, function(err, user){
+		if(user){
+			// FIXME: User already exists
+			res.redirect("/register");
+		}else{
+			if(req.body.password.length < config.minPasswordLength){
+				// FIXME: Password too short
+				res.redirect("/register");
+			}else{			
+				redisClient.hmset("user:"+req.body.user, {
+					"user": req.body.user,
+					"password": passwordHash.generate(req.body.password)
+				}, function(err, user){
+					// FIXME: User created
+					res.redirect("/registered");
+				});
+			}
+		}
+	});
+});
+
+app.get("/registered", function(req, res){
+	res.render("registered");
+});
+
+app.get("/password-reset", function(req, res){
+
+});
+
+app.post("/password-reset", function(req, res){
+
+});
+
+app.get("/password-reset-sent", function(req, res){
+
 });
 
 /*
