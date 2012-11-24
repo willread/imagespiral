@@ -10,10 +10,21 @@ var email = require("emailjs/email");
 var sys = require('sys')
 var exec = require('child_process').exec;
 var cluster = require("cluster");
+var redis = require("redis");
+var skip32 = new require("skip32").Skip32;
+skip32 = new skip32([0x9b, 0x21, 0x96, 0xe, 0x1a, 0xcf, 0x24, 0x5f, 0x14, 0x93]);
 	
 // Initialize app
 	
 var app = express();
+
+// Setup redis
+
+var redisClient = redis.createClient();
+
+redisClient.on("error", function (err) {
+    console.log("Redis error: " + err);
+});
 
 // Connect to email server
 
@@ -111,10 +122,13 @@ app.get("/:token", function(req, res, next){
 		if(!exists)	
 			res.send("not found"); // TODO: Proper 404
 		else
-			res.render("single", {
-				token: req.params.token,
-				next: null, // TODO
-				previous: null
+			redisClient.incr("image:" + req.params.token + ":count", function(err, count){
+				res.render("single", {
+					token: req.params.token,
+					count: count,
+					next: null, // TODO
+					previous: null
+				});			
 			});
 	});
 });
@@ -124,46 +138,60 @@ app.get("/:token", function(req, res, next){
  * Handle image uploads
  *
  */
+ 
+var generateToken = function(callback){
+	
+	redisClient.incr("images:id", function(err, id){
+		
+		id = skip32.encrypt(id).toString(16);
+		callback(id);
+		
+	});
+ 
+}
 
 app.post("/", function(req, res){
-	var token = Math.floor(Math.random()*16777215).toString(16); // TODO: Generate better token
 
-	var temp = req.files.file.path;
-	var path = "./public/images/" + token;
+	generateToken(function(token){
 	
-	var thumbnailSize;
-
-	for(var size in config.thumbnailSizes)
-		if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
-
-	console.log(req.body["thumbnail-size"]);
-	if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
-	
-	if(!temp){
-		res.send("error: file failed to upload");
-	}else{
+		var temp = req.files.file.path;
+		var path = "./public/images/" + token;
 		
-		fs.stat(temp, function(err, stats){
-			if(stats.size > config.maxFileSize * 1024 * 1024){
-				res.send("error: file is too large");
-			}else{
-				exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
-					fs.exists("./public/small/" + token + ".jpg", function(exists){
-						if(exists){
-							exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
-								exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
-									res.redirect("/" + token);
-								});
-							});
-						}else{
-							res.send("error: invalid image");
-						}
-					});
-				});
-			}
-		})
+		var thumbnailSize;
 	
-	}
+		for(var size in config.thumbnailSizes)
+			if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
+	
+		console.log(req.body["thumbnail-size"]);
+		if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
+		
+		if(!temp){
+			res.send("error: file failed to upload");
+		}else{
+			
+			fs.stat(temp, function(err, stats){
+				if(stats.size > config.maxFileSize * 1024 * 1024){
+					res.send("error: file is too large");
+				}else{
+					exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
+						fs.exists("./public/small/" + token + ".jpg", function(exists){
+							if(exists){
+								exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
+									exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
+										res.redirect("/" + token);
+									});
+								});
+							}else{
+								res.send("error: invalid image");
+							}
+						});
+					});
+				}
+			})
+		
+		}
+	
+	});
 
 });
 

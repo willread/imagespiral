@@ -9,6 +9,7 @@
 	},
 	"reportEmail": "reports@imagespiral.com",
 	"maxFileSize": "3",
+	"tokenLength": 6,
 	"thumbnailSizes": [
 		"100x100",
 		"150x150",
