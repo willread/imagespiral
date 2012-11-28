@@ -14,6 +14,7 @@
 	"redis": "*",
 	"skip32": "*",
 	"connect-redis": "*",
-	"password-hash": "*"
+	"password-hash": "*",
+	"connect-flash", "*"
   }
 }

@@ -15,6 +15,7 @@ var RedisStore = require('connect-redis')(express);
 var skip32 = new require("skip32").Skip32;
 skip32 = new skip32([0x9b, 0x21, 0x96, 0xe, 0x1a, 0xcf, 0x24, 0x5f, 0x14, 0x93]);
 var passwordHash = require('password-hash');
+var flash = require('connect-flash');
 	
 // Initialize app
 	
@@ -57,12 +58,12 @@ app.configure(function(){
 		next();
 	});
 	
-	app.use(express.cookieParser("I aM A ReaLLy DiffiCulT TO GueSS SecReT"));
+	app.use(express.cookieParser());
 	app.use(express.session({
 		secret: "I aM A ReaLLy DiffiCulT TO GueSS SecReT",
-		store: new RedisStore,
-		cookie: { secure: false, maxAge: 86400000 }
+		store: new RedisStore({})
 	}));
+	app.use(flash());
 	app.use(require('less-middleware')({ src: __dirname + '/public' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.favicon());
@@ -102,47 +103,61 @@ app.get("/reported", function(req, res){
  */
  
 app.get("/login", function(req, res){
-	res.render("login");
+	res.render("login", {
+		error: req.flash("error")
+	});
 });
 
 app.post("/login", function(req, res){
 	redisClient.hgetall("user:"+req.body.user, function(err, user){
 		if(!user){
-			// FIXME: No such user
+			req.flash("error", "Invalid user or password");
 			res.redirect("/login");
 		}else{
 			if(!passwordHash.verify(req.body.password, user.password)){
-				// FIXME: Invalid password
+				req.flash("error", "Invalid user or password");
 				res.redirect("/login");
 			}else{
-				// FIXME: Go to user homepage
-				res.redirect("/tos");			
+				req.session.user = user;
+				res.redirect("/account");			
 			}
 		}
 	});
 });
 
+app.get("/logout", function(req, res){
+	delete(req.session.user);
+	res.redirect("/"); // FIXME
+});
+
 app.get("/register", function(req, res){
-	res.render("register");
+	res.render("register", {
+		error: req.flash("error")
+	});
 });
 
 app.post("/register", function(req, res){
 	redisClient.hgetall("user:"+req.body.user, function(err, user){
 		if(user){
-			// FIXME: User already exists
+			req.flash("error", "User already exists");
 			res.redirect("/register");
 		}else{
 			if(req.body.password.length < config.minPasswordLength){
-				// FIXME: Password too short
+				req.flash("error", "Password must be at least " + config.minPasswordLength + " characters long");
 				res.redirect("/register");
-			}else{			
-				redisClient.hmset("user:"+req.body.user, {
-					"user": req.body.user,
-					"password": passwordHash.generate(req.body.password)
-				}, function(err, user){
-					// FIXME: User created
-					res.redirect("/registered");
-				});
+			}else{
+				if(!req.body.user.match(/\S+@\S+/)){
+					req.flash("error", "Invalid email address");
+					res.redirect("/register");
+				}else{
+					redisClient.hmset("user:"+req.body.user, {
+						"user": req.body.user,
+						"password": passwordHash.generate(req.body.password)
+					}, function(err, user){
+						// FIXME: User created
+						res.redirect("/registered");
+					});
+				}
 			}
 		}
 	});
@@ -152,17 +167,88 @@ app.get("/registered", function(req, res){
 	res.render("registered");
 });
 
-app.get("/password-reset", function(req, res){
+app.get("/password-reset/:token", function(req, res){
+	res.render("new-password", {
+		token: req.params.token,
+		error: req.flash("error")
+	});
+});
 
+app.post("/new-password", function(req, res){
+	redisClient.hgetall("user:"+req.body.user, function(err, user){
+		if(!user || user.token != req.body.token){
+			req.flash("error", "Invalid token");
+			res.redirect("/login");
+		}else{
+			if(req.body.password.length < config.minPasswordLength){
+				req.flash("error", "Password must be at least " + config.minPasswordLength + " characters long");
+				res.redirect("/password-reset/"+req.body.token);
+			}else{
+				redisClient.hmset("user:"+req.body.user, {
+					token: "",
+					password: passwordHash.generate(req.body.password)
+				});
+				req.flash("error", "You can now log in with your new password");
+				res.redirect("/login");
+			}
+		}
+	});
+	req.params.user;
+	req.params.token;
+	req.params.password;
+});
+
+app.get("/password-reset", function(req, res){
+	res.render("password-reset", {
+		error: req.flash("error")
+	});
 });
 
 app.post("/password-reset", function(req, res){
-
+	redisClient.hgetall("user:"+req.body.user, function(err, user){
+		if(user){
+			var token = Math.floor(Math.random() * 33554432).toString(16);
+			redisClient.hmset("user:"+req.body.user, {
+				"token": token
+			}, function(err){
+				if(!err){
+					emailServer.send({
+						text: "http://" + config.domain + "/password-reset/" + token,
+						from: config.name + " <noreply@" + config.domain + ">",
+						to: user.user,
+						subject: "Password Reset"
+					}, function(err, message){
+						 // ?
+					})
+				}
+			});
+		}
+	});
+	res.redirect("/password-reset-sent");
 });
 
 app.get("/password-reset-sent", function(req, res){
-
+	res.render("password-reset-sent");
 });
+
+/*
+ *
+ * Member section
+ *
+ */
+ 
+ app.get("/account", function(req, res){
+ 	if(!req.session.user){
+ 		res.redirect("/login");
+ 	}else{
+ 		redisClient.smembers("user:"+req.session.user.user+":images", function(err, images){
+		 	res.render("account", {
+		 		user: req.session.user,
+		 		images: images
+		 	});
+ 		});
+ 	}
+ });
 
 /*
  *
@@ -237,7 +323,6 @@ app.post("/", function(req, res){
 		for(var size in config.thumbnailSizes)
 			if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
 	
-		console.log(req.body["thumbnail-size"]);
 		if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
 		
 		if(!temp){
@@ -252,7 +337,11 @@ app.post("/", function(req, res){
 						fs.exists("./public/small/" + token + ".jpg", function(exists){
 							if(exists){
 								exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
-									exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){
+									exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){								
+										if(req.session.user){
+											redisClient.sadd("user:"+req.session.user.user+":images", token);
+										}
+										
 										res.redirect("/" + token);
 									});
 								});

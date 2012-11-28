@@ -3,8 +3,21 @@ extends layout
 block content
 	div(class="container")
 		div(class="box")
-			form(action="/register", method="post")
-				input(type="text", name="user")
-				input(type="password", name="password")
-				input(type="submit")
-				
+			div(class="box-inner content")
+				div(class="form")
+					form(action="/register", method="post", class="form-horizontal")
+						fieldset
+							legend Register an account on #{locals.config.name}
+							- if (locals.error.length > 0)
+								div(class="alert alert-error")=locals.error
+							div(class="control-group")
+								label(class="control-label", for="user") Email Address
+								div(class="controls")				
+									input(type="text", name="user")
+							div(class="control-group")
+								label(class="control-label", for="password"") Password
+								div(class="controls")				
+									input(type="password", name="password")
+							div(class="control-group")
+								div(class="controls")
+									input(type="submit", class="btn btn-custom", value="Register")

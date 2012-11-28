@@ -5,7 +5,7 @@
 		"host": "smtp.gmail.com",
 		"user": "reports@imagespiral.com",
 		"password": "cx5accjg",
-		"ssl": "false"
+		"ssl": "true"
 	},
 	"reportEmail": "reports@imagespiral.com",
 	"maxFileSize": "3",

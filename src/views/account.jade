@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	div(class="container")
+		div(class="box")
+			div="logged in as " + user.user
+			br
+			a(href="/logout") Log Out
+			table
+			- for (var image in images)
+				tr
+					td
+						| <img src="/small/#{images[image]}.jpg">
+					td
+						
