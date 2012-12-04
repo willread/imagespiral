@@ -30,13 +30,32 @@ body {
 }
 
 .box {
-	-webkit-border-radius: 10px;
 	color: #fff;
 	background: @color;
 	margin-bottom: 10px;
 	position: relative;
 	padding: 0px;
 	color: #333;
+}
+
+.meta {
+	width: 605px;
+	margin-left: -5px;
+	margin-top: -5px;
+}
+
+.thumb {
+	color: #fff;
+	background: @color;
+	margin-right: 5px;
+	margin-top: 5px;
+	opacity: 0.6;
+	width: 116px;
+	height: 116px;
+}
+
+.thumb:hover {
+	opacity:1.0;
 }
 
 .box-inner {
@@ -61,7 +80,7 @@ body {
 }
 
 .box.image .box-inner {
-	background: #121212;
+	background: #fff;
 	padding: 0px;
 	margin: 10px;
 }
@@ -347,4 +366,23 @@ legend {
 
 .upload p {
 	text-align: center;
+}
+
+#nav {
+	padding-top: 10px;
+}
+
+#nav a {
+	display: block;
+	padding: 5px;
+	margin: 0 10px 10px 10px;
+	color: #fff;
+	background: #ddd;
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#nav a:hover {
+	background: #aaa;
 }

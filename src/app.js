@@ -16,6 +16,7 @@ var skip32 = new require("skip32").Skip32;
 skip32 = new skip32([0x9b, 0x21, 0x96, 0xe, 0x1a, 0xcf, 0x24, 0x5f, 0x14, 0x93]);
 var passwordHash = require('password-hash');
 var flash = require('connect-flash');
+var glob = require("glob");
 	
 // Initialize app
 	
@@ -280,17 +281,36 @@ app.post("/report", function(req, res){
 
 app.get("/:token", function(req, res, next){
 	fs.exists("./public/images/" + req.params.token + ".jpg", function(exists){
-		if(!exists)	
+		if(!exists){
 			res.send("not found"); // TODO: Proper 404
-		else
-			redisClient.incr("image:" + req.params.token + ":count", function(err, count){
-				res.render("single", {
-					token: req.params.token,
-					count: count,
-					next: null, // TODO
-					previous: null
-				});			
-			});
+		}else{
+			if(req.params.token.indexOf("-") > -1){
+				var subtoken = req.params.token.split("-")[0];
+				var num = parseInt(req.params.token.split("-")[1]);
+				glob("./public/images/" + subtoken + "-*.jpg", function(err, files){
+					if(err || !files || files.length < 1){
+						res.send("gallery not found"); // TODO: Proper 404
+					}else{
+						res.render("gallery", {
+							token: req.params.token,
+							subtoken: subtoken,
+							images: files,
+							next: num < files.length - 1 ? num + 1 : -1,
+							previous : num > 0 ? num - 1 : -1
+						});
+					}
+				});
+			}else{
+				// redisClient.incr("image:" + req.params.token + ":count", function(err, count){
+					res.render("single", {
+						token: req.params.token,
+						// count: count,
+						// next: null, // TODO
+						// previous: null // TODO
+					});			
+				// });
+			}
+		}
 	});
 });
 
@@ -311,49 +331,78 @@ var generateToken = function(callback){
  
 }
 
+var processFile = function(req, res, token, index){
+
+	console.log("processing image " + token + " / " + index);
+	
+	var isGallery = req.files.files[0].length > 1;
+
+	var temp = req.files.files[0][index].path;
+	var name = !isGallery ? token : token + "-" + index;
+	
+	var thumbnailSize;
+
+	for(var size in config.thumbnailSizes)
+		if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
+
+	if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
+	
+	if(!temp){
+		// FIXME res.send("error: file failed to upload");
+		console.log("file failed to upload");
+	}else{
+		fs.stat(temp, function(err, stats){
+			if(stats.size > config.maxFileSize * 1024 * 1024){
+				// FIXME res.send("error: file is too large");
+				console.log("file is too large");
+			}else{
+				exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + name + ".jpg", function (error, stdout, stderr){
+					fs.exists("./public/small/" + name + ".jpg", function(exists){
+						if(exists){
+							exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + name + ".jpg", function (error, stdout, stderr){
+								exec("convert " + temp + " -strip " + "./public/images/" + name + ".jpg", function (error, stdout, stderr){								
+									exec("convert " + temp + " -strip -thumbnail 85x85^ -gravity center -crop 85x85+0+0 +repage " + "./public/tiny/" + name + ".jpg", function (error, stdout, stderr){
+										if(req.session.user){
+											redisClient.sadd("user:"+req.session.user.user+":images", name);
+										}
+										
+										if(req.files.files[0][index + 1])
+											processFile(req, res, token, index + 1);
+										else
+											res.redirect("/" + token + (req.files.files[0].length > 1 ? "-0" : ""));
+									});
+								});
+							});
+						}else{
+							// FIXME: res.send("error: invalid image");
+							console.log("invalid image");
+						}
+					});
+				});
+			}
+		})
+	
+	}
+
+}
+
 app.post("/", function(req, res){
 
 	generateToken(function(token){
-	
-		var temp = req.files.file.path;
-		var path = "./public/images/" + token;
 		
-		var thumbnailSize;
-	
-		for(var size in config.thumbnailSizes)
-			if(config.thumbnailSizes[size] == req.body["thumbnail-size"]) thumbnailSize = config.thumbnailSizes[size];
-	
-		if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
-		
-		if(!temp){
-			res.send("error: file failed to upload");
+		if(!req.files.files){
+			res.send("error: no files");
 		}else{
 			
-			fs.stat(temp, function(err, stats){
-				if(stats.size > config.maxFileSize * 1024 * 1024){
-					res.send("error: file is too large");
-				}else{
-					exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + token + ".jpg", function (error, stdout, stderr){
-						fs.exists("./public/small/" + token + ".jpg", function(exists){
-							if(exists){
-								exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + token + ".jpg", function (error, stdout, stderr){
-									exec("convert " + temp + " -strip " + "./public/images/" + token + ".jpg", function (error, stdout, stderr){								
-										if(req.session.user){
-											redisClient.sadd("user:"+req.session.user.user+":images", token);
-										}
-										
-										res.redirect("/" + token);
-									});
-								});
-							}else{
-								res.send("error: invalid image");
-							}
-						});
-					});
-				}
-			})
-		
+			if(req.files.files[0].path)
+				req.files.files[0] = [req.files.files[0]];
+				
+				console.log(req.files.files[0]);
+			
+			processFile(req, res, token, 0);
+				
 		}
+		
 	
 	});
 

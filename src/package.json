@@ -15,6 +15,7 @@
 	"skip32": "*",
 	"connect-redis": "*",
 	"password-hash": "*",
-	"connect-flash", "*"
+	"connect-flash", "*",
+	"glob", "*"
   }
 }
