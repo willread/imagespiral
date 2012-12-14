@@ -5,11 +5,18 @@ block content
 		div(class="row")
 			div(class="span8")
 				div(class="image box")
+					div(id="nav")
+						- if (locals.next > -1)	
+							a(id="next", href="/"+locals.subtoken+"-"+locals.next, class="pull-right") next &raquo;
+						- if (locals.previous > -1)
+							a(id="previous", href="/"+locals.subtoken+"-"+locals.previous, class="pull-left") &laquo; previous
 					div(class="box-inner")
+						a(href="/images/" + token + ".jpg")
+							img(class="full", src="/thumbs/" + token + ".jpg")
 							div(class="meta")
 								- for image, ii in images
-									a(href="/" + token + "-" + ii)
-										img(class="thumb", src="/tiny/" + token + "-" + ii + ".jpg")				
+									a(href="/" + subtoken + "-" + ii)
+										img(class="thumb", src="/tiny/" + subtoken + "-" + ii + ".jpg")				
 			div(class="span4")
 				div(class="box")
 					div(class="box-inner")

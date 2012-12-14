@@ -282,7 +282,18 @@ app.post("/report", function(req, res){
 app.get("/:token", function(req, res, next){
 	fs.exists("./public/images/" + req.params.token + ".jpg", function(exists){
 		if(!exists){
-			res.send("not found"); // TODO: Proper 404
+			fs.exists("./public/images/" + req.params.token + "-0.jpg", function(exists){
+				if(!exists){
+					res.send("not found"); // TODO: Proper 404
+				}else{
+					glob("./public/images/" + req.params.token + "-*.jpg", function(err, files){
+						res.render("gallery", {
+							token: req.params.token,
+							images: files
+						});
+					});
+				}
+			});
 		}else{
 			if(req.params.token.indexOf("-") > -1){
 				var subtoken = req.params.token.split("-")[0];
@@ -291,7 +302,7 @@ app.get("/:token", function(req, res, next){
 					if(err || !files || files.length < 1){
 						res.send("gallery not found"); // TODO: Proper 404
 					}else{
-						res.render("gallery", {
+						res.render("gallery-single", {
 							token: req.params.token,
 							subtoken: subtoken,
 							images: files,
