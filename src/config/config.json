@@ -1,6 +1,7 @@
 {
 	"name": "ImageSpiral",
 	"domain": "imagespiral.com",
+	"secret": "I aM A ReaLLy DiffiCulT TO GueSS SecReT",
 	"smtp": {
 		"host": "smtp.gmail.com",
 		"user": "user@domain.com",
