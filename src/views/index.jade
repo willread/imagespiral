@@ -6,11 +6,11 @@ block content
 			div(class="box-inner upload content")
 				div(class="form")
 					fieldset
-						legend Upload an Image
+						legend Upload Images
 						- if (locals.error.length > 0)
 							div(class="alert alert-error")=locals.error
 						div(id="upload-cover", class="hidden")
-						p(style="color: #ddd") JPEG, GIF and PNG images only, #{locals.config.maxFileSize}MB max
+						p(style="color: #ddd") Select one or more images, up to #{locals.config.maxFileSize}MB each
 					div(id="upload-form")
 						form(id="upload-form", action="/", method="POST", enctype="multipart/form-data", class="form-horizontal")
 							div(class="control-group")

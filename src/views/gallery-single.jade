@@ -12,15 +12,17 @@ block content
 							a(id="previous", href="/"+locals.subtoken+"-"+locals.previous, class="pull-left") &laquo; previous
 					div(class="box-inner")
 						a(href="/images/" + token + ".jpg")
-							img(class="full", src="/thumbs/" + token + ".jpg")
-							div(class="meta")
-								- for image, ii in images
-									a(href="/" + subtoken + "-" + ii)
-										img(class="thumb", src="/tiny/" + subtoken + "-" + ii + ".jpg")				
+							img(class="full", src="/thumbs/" + token + ".jpg")			
 			div(class="span4")
 				div(class="box")
 					div(class="box-inner")
 						#meta
+							div(class="thumbs")
+								- for image, ii in images
+									a(href="/" + subtoken + "-" + ii)
+										img(class="thumb", src="/tiny/" + subtoken + "-" + ii + ".jpg")
+								- if (locals.more)
+									a(href="/" + subtoken, class="more") View All
 							h4 Direct URL
 							input(id="share-url", value="http://imagespiral.com/" + token, spellcheck="false")
 							h4 Forum Embed

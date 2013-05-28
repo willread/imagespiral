@@ -3,8 +3,8 @@
 	"domain": "imagespiral.com",
 	"smtp": {
 		"host": "smtp.gmail.com",
-		"user": "reports@imagespiral.com",
-		"password": "cx5accjg",
+		"user": "user@domain.com",
+		"password": "XXXXXX",
 		"ssl": "true"
 	},
 	"reportEmail": "reports@imagespiral.com",

@@ -302,12 +302,18 @@ app.get("/:token", function(req, res, next){
 					if(err || !files || files.length < 1){
 						res.send("gallery not found"); // TODO: Proper 404
 					}else{
+						var more = false;
+						// if(files.length > 3){
+						// 	files = files.slice(0, 3);
+						// 	more = true;
+						// }
 						res.render("gallery-single", {
 							token: req.params.token,
 							subtoken: subtoken,
 							images: files,
 							next: num < files.length - 1 ? num + 1 : -1,
-							previous : num > 0 ? num - 1 : -1
+							previous : num > 0 ? num - 1 : -1,
+							more: more
 						});
 					}
 				});
@@ -359,20 +365,20 @@ var processFile = function(req, res, token, index){
 	if(!thumbnailSize) thumbnailSize = config.thumbnailSizes[0];
 	
 	if(!temp){
-		// FIXME res.send("error: file failed to upload");
-		console.log("file failed to upload");
+		console.log("error: failed to upload (" + req.files.files[0][index].name + ")");
+		res.send("error: failed to upload (" + req.files.files[0][index].name + ")");
 	}else{
 		fs.stat(temp, function(err, stats){
 			if(stats.size > config.maxFileSize * 1024 * 1024){
-				// FIXME res.send("error: file is too large");
-				console.log("file is too large");
+				console.log("error: too large (" + req.files.files[0][index].name + ")");
+				res.send("error: too large (" + req.files.files[0][index].name + ")");
 			}else{
-				exec("convert " + temp + " -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + name + ".jpg", function (error, stdout, stderr){
+				exec("convert " + temp + "[0] -strip -thumbnail " + thumbnailSize + " " + "./public/small/" + name + ".jpg", function (error, stdout, stderr){
 					fs.exists("./public/small/" + name + ".jpg", function(exists){
 						if(exists){
-							exec("convert " + temp + " -strip -thumbnail 600x600 " + "./public/thumbs/" + name + ".jpg", function (error, stdout, stderr){
-								exec("convert " + temp + " -strip " + "./public/images/" + name + ".jpg", function (error, stdout, stderr){								
-									exec("convert " + temp + " -strip -thumbnail 85x85^ -gravity center -crop 85x85+0+0 +repage " + "./public/tiny/" + name + ".jpg", function (error, stdout, stderr){
+							exec("convert " + temp + "[0] -strip -thumbnail 600x600 " + "./public/thumbs/" + name + ".jpg", function (error, stdout, stderr){
+								exec("convert " + temp + "[0] -strip " + "./public/images/" + name + ".jpg", function (error, stdout, stderr){								
+									exec("convert " + temp + "[0] -strip -thumbnail 85x85^ -gravity center -crop 85x85+0+0 +repage " + "./public/tiny/" + name + ".jpg", function (error, stdout, stderr){
 										if(req.session.user){
 											redisClient.sadd("user:"+req.session.user.user+":images", name);
 										}
@@ -385,8 +391,8 @@ var processFile = function(req, res, token, index){
 								});
 							});
 						}else{
-							// FIXME: res.send("error: invalid image");
-							console.log("invalid image");
+							console.log("error: invalid image (" + req.files.files[0][index].name + ")");
+							res.send("error: invalid image (" + req.files.files[0][index].name + ")");
 						}
 					});
 				});
