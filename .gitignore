@@ -3,14 +3,6 @@
 
 src/node_modules
 
-src/public/images
-
-src/public/thumbs
-
-src/public/small
-
-src/public/tiny
-
 src/public/css/style.css
 
 queue

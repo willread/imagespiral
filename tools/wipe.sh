@@ -1,3 +1,5 @@
 #!/bin/sh
-rm -rf ../src/public/images/*
-rm -rf ../src/public/thumbs/*
+rm ../src/public/images/*
+rm ../src/public/thumbs/*
+rm ../src/public/tiny/*
+rm ../src/public/small/*
