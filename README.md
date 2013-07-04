@@ -12,3 +12,5 @@ Current features include:
 	- Designed so that no database reads are required for non-account pages
 	- Threaded architecture for maximum speed
 	- User session and account management built on a redis data store
+	
+Demo available at (http://imagespiral.collectivecognition.com/)[imagespiral.collectivecognition.com]
