@@ -13,4 +13,4 @@ Current features include:
 	- Threaded architecture for maximum speed
 	- User session and account management built on a redis data store
 	
-Demo available at (http://imagespiral.collectivecognition.com/)[imagespiral.collectivecognition.com]
+Demo available at [imagespiral.collectivecognition.com](http://imagespiral.collectivecognition.com/)
